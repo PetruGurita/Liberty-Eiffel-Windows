@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 ::Check if mingw-64 is installed & environment variable set
-@echo Checking requirments...
+@echo Checking requirements...
 WHERE gcc --version>nul 2>nul
 IF %ERRORLEVEL% NEQ 0 (
     echo Please install mingw-64 compiler

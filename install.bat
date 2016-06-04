@@ -12,7 +12,6 @@ IF %ERRORLEVEL% NEQ 0 (
 ::Create the configuration file in root HDD + 
 ::the folder where the binaries will be installed
 @echo Preparing the files...
-setlocal
 set installation_path=%~dp0
 (
     echo [General]

@@ -12,6 +12,7 @@ IF %ERRORLEVEL% NEQ 0 (
 ::Create the configuration file in root HDD + 
 ::the folder where the binaries will be installed
 @echo Preparing the files...
+
 set installation_path=%~dp0
 (
     echo [General]
@@ -159,63 +160,73 @@ set installation_path=%~dp0
 
 ::mkdir bin
 @echo Starting T1...
-cd /d %installation_path%resources\smarteiffel-germ
 :: Compile every source individually
+
+cd %installation_path%resources\smarteiffel-germ
+
 for %%i in ( *.c ) do (
     gcc -pipe -O2 -c -x c "%%i"
 )
 ::Get the number of .o files from the dir listing
-for /f "tokens=1" %%A in ('dir *.o^|find "File(s)"') do set o_files=%%A
+for /f "tokens=1" %%A in ('dir *.o^|find "File(s)"') do set o_files1=%%A
 :: Build a string with all of the .o files (up to 512 due to string length limitations)
-for /L %%A in (1,1,!o_files!) do set "o_string=!o_string! compile_to_c%%A.o"
+for /L %%A in (1,1,!o_files1!) do set "o_string1=!o_string1! compile_to_c%%A.o"
 
-gcc -Xlinker -no-as-needed !o_string! -x none -o compile_to_c
+gcc -Xlinker -no-as-needed !o_string1! -x none -o compile_to_c
 :: Clean the directory
-del *.o
+cd %installation_path%resources\smarteiffel-germ
+del *.o*
 strip compile_to_c.exe
+
+
 mkdir T1
-move /y compile_to_c.exe T1
-cd T1
-start compile_to_c.exe -verbose -boost -no_gc compile_to_c -o compile_to_c.new
-cd ..
 mkdir T2
+move /y compile_to_c.exe T1 >nul
+cd T1
+start /wait compile_to_c.exe -verbose -boost -no_gc compile_to_c -o compile_to_c.new
+cd ..
 move /y T1\* T2 >nul
-move /y T2\compile_to_c.exe T1
+move /y T2\compile_to_c.exe T1 >nul
+@echo Done
 
 @echo Starting T2...
 cd T2
 for %%i in ( *.c ) do (
     gcc -pipe -O2 -c -x c "%%i"
 )
-for /f "tokens=1" %%A in ('dir *.o^|find "File(s)"') do set o_files=%%A
-for /L %%A in (1,1,!o_files!) do set "o_string=!o_string! compile_to_c%%A.o"
-gcc -Xlinker -no-as-needed !o_string! -x none -o compile_to_c
-strip compile_to_c.exe
+for /f "tokens=1" %%A in ('dir *.o^|find "File(s)"') do set o_files2=%%A
+for /L %%A in (1,1,!o_files2!) do set "o_string2=!o_string2! compile_to_c%%A.o"
+cd %installation_path%resources\smarteiffel-germ\T2
+gcc -Xlinker -no-as-needed !o_string2! -x none -o compile_to_c
 mkdir temp
 move /y compile_to_c.exe temp >nul
 del /F /Q  *.*  
 move /y temp\* . >nul
 rmdir temp
-start compile_to_c.exe -verbose -boost -no_gc compile_to_c -o compile_to_c.new
+
+start /wait compile_to_c.exe -verbose -boost -no_gc compile_to_c -o compile_to_c.new
 cd ..
 mkdir T3
 move /y T2\* T3 >nul
 move /y T3\compile_to_c.exe T2 >nul
+@echo Done
 
 @echo Starting T3...
 cd T3
 for %%i in ( *.c ) do (
     gcc -pipe -O2 -c -x c "%%i"
 )
-for /f "tokens=1" %%A in ('dir *.o^|find "File(s)"') do set o_files=%%A
-for /L %%A in (1,1,!o_files!) do set "o_string=!o_string! compile_to_c%%A.o"
-gcc -Xlinker -no-as-needed !o_string! -x none -o compile_to_c
-strip compile_to_c.exe
+for /f "tokens=1" %%A in ('dir *.o^|find "File(s)"') do set o_files3=%%A
+for /L %%A in (1,1,!o_files3!) do set "o_string3=!o_string3! compile_to_c%%A.o"
+gcc -Xlinker -no-as-needed !o_string3! -x none -o compile_to_c
+cd %installation_path%resources\smarteiffel-germ\T3
 mkdir temp
 move /y compile_to_c.exe temp >nul
 del /F /Q  *.*  
 move /y temp\* . >nul
 rmdir temp
+@echo Done
+
 endlocal
 
 pause

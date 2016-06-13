@@ -156,28 +156,18 @@ set installation_path=%~dp0
     echo cpp_linker_options: -Xlinker -${hyphen}no-as-needed
     echo smarteiffel_options: -no_strip
 
-) > "C:\liberty.cfg"
-
-::mkdir bin
+) > "C:\Users\%USERNAME%\liberty.cfg"
+if not exist "%installation_path%\bin" (
+    mkdir bin
+)
 @echo Starting T1...
 :: Compile every source individually
-
-cd %installation_path%resources\smarteiffel-germ
-
-for %%i in ( *.c ) do (
-    gcc -pipe -O2 -c -x c "%%i"
-)
-::Get the number of .o files from the dir listing
-for /f "tokens=1" %%A in ('dir *.o^|find "File(s)"') do set o_files1=%%A
-:: Build a string with all of the .o files (up to 512 due to string length limitations)
-for /L %%A in (1,1,!o_files1!) do set "o_string1=!o_string1! compile_to_c%%A.o"
-
-gcc -Xlinker -no-as-needed !o_string1! -x none -o compile_to_c
-:: Clean the directory
-cd %installation_path%resources\smarteiffel-germ
-del *.o*
+:: poate este stripul de vina
+cd resources\smarteiffel-germ
+gcc -pipe -O2 -c -x c *.c 
+gcc *.o -o compile_to_c
+del *.o
 strip compile_to_c.exe
-
 
 mkdir T1
 mkdir T2
@@ -191,13 +181,10 @@ move /y T2\compile_to_c.exe T1 >nul
 
 @echo Starting T2...
 cd T2
-for %%i in ( *.c ) do (
-    gcc -pipe -O2 -c -x c "%%i"
-)
-for /f "tokens=1" %%A in ('dir *.o^|find "File(s)"') do set o_files2=%%A
-for /L %%A in (1,1,!o_files2!) do set "o_string2=!o_string2! compile_to_c%%A.o"
-cd %installation_path%resources\smarteiffel-germ\T2
-gcc -Xlinker -no-as-needed !o_string2! -x none -o compile_to_c
+gcc -pipe -O2 -c -x c *.c 
+gcc *.o -o compile_to_c
+del *.o
+strip compile_to_c.exe
 mkdir temp
 move /y compile_to_c.exe temp >nul
 del /F /Q  *.*  
@@ -213,19 +200,28 @@ move /y T3\compile_to_c.exe T2 >nul
 
 @echo Starting T3...
 cd T3
-for %%i in ( *.c ) do (
-    gcc -pipe -O2 -c -x c "%%i"
-)
-for /f "tokens=1" %%A in ('dir *.o^|find "File(s)"') do set o_files3=%%A
-for /L %%A in (1,1,!o_files3!) do set "o_string3=!o_string3! compile_to_c%%A.o"
-gcc -Xlinker -no-as-needed !o_string3! -x none -o compile_to_c
-cd %installation_path%resources\smarteiffel-germ\T3
+gcc -pipe -O2 -c -x c *.c 
+gcc *.o -o compile_to_c
+del *.o
+strip compile_to_c.exe
 mkdir temp
 move /y compile_to_c.exe temp >nul
 del /F /Q  *.*  
 move /y temp\* . >nul
 rmdir temp
 @echo Done
+
+cd ..
+fc /b T2\compile_to_c.exe T3\compile_to_c.exe > nul
+if ERRORLEVEL 1 (
+    @echo Please retry the installation process.
+    EXIT /B
+)
+move /y T3\compile_to_c.exe ../../bin >nul
+rd /s /q T1\
+rd /s /q T2\
+rd /s /q T3\
+
 
 endlocal
 

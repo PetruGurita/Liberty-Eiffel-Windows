@@ -1,6 +1,5 @@
 @echo off
 setlocal enabledelayedexpansion
-
 ::Check if mingw-64 is installed & environment variable set
 @echo Checking requirements...
 WHERE gcc --version>nul 2>nul
@@ -64,106 +63,107 @@ set installation_path=%~dp0
     echo c_compiler_path: gcc
     echo c_compiler_options: -pipe -O2
     echo c_linker_path: gcc
-    echo c_linker_options: -Xlinker -${hyphen}no-as-needed
+    echo c_linker_options: -Xlinker -no-as-needed
     echo cpp_compiler_type: g++
     echo cpp_compiler_path: g++
     echo cpp_compiler_options: -pipe -O2
     echo cpp_linker_path: g++
-    echo cpp_linker_options: -Xlinker -${hyphen}no-as-needed
+    echo cpp_linker_options: -Xlinker -no-as-needed
     echo.
     echo [no_check]
     echo c_compiler_type: gcc
     echo c_compiler_path: gcc
     echo c_compiler_options: -pipe -O1
     echo c_linker_path: gcc
-    echo c_linker_options: -Xlinker -${hyphen}no-as-needed
+    echo c_linker_options: -Xlinker -no-as-needed
     echo cpp_compiler_type: g++
     echo cpp_compiler_path: g++
     echo cpp_compiler_options: -pipe -O1
     echo cpp_linker_path: g++
-    echo cppecho _linker_options: -Xlinker -${hyphen}no-as-needed
+    echo cpp_linker_options: -Xlinker -no-as-needed
     echo.
     echo [require_check]
     echo c_compiler_type: gcc
     echo c_compiler_path: gcc
     echo c_compiler_options: -pipe -O1
     echo c_linker_path: gcc
-    echo c_linker_options: -Xlinker -${hyphen}no-as-needed
+    echo c_linker_options: -Xlinker -no-as-needed
     echo cpp_compiler_type: g++
     echo cpp_compiler_path: g++
     echo cpp_compiler_options: -pipe
     echo cpp_linker_path: g++
-    echo cpp_linker_options: -Xlinker -${hyphen}no-as-needed
+    echo cpp_linker_options: -Xlinker -no-as-needed
     echo.
     echo [ensure_check]
     echo c_compiler_type: gcc
     echo c_compiler_path: gcc
     echo c_compiler_options: -pipe -O1
     echo c_linker_path: gcc
-    echo c_linker_options: -Xlinker -${hyphen}no-as-needed
+    echo c_linker_options: -Xlinker -no-as-needed
     echo cpp_compiler_type: g++
     echo cpp_compiler_path: g++
     echo cpp_compiler_options: -pipe
     echo cpp_linker_path: g++
-    echo cpp_linker_options: -Xlinker -${hyphen}no-as-needed
+    echo cpp_linker_options: -Xlinker -no-as-needed
     echo.
     echo [invariant_check]
     echo c_compiler_type: gcc
     echo c_compiler_path: gcc
     echo c_compiler_options: -pipe -O1
     echo c_linker_path: gcc
-    echo c_linker_options: -Xlinker -${hyphen}no-as-needed
+    echo c_linker_options: -Xlinker -no-as-needed
     echo cpp_compiler_type: g++
     echo cpp_compiler_path: g++
     echo cpp_compiler_options: -pipe
     echo cpp_linker_path: g++
-    echo cpp_linker_options: -Xlinker -${hyphen}no-as-needed
+    echo cpp_linker_options: -Xlinker -no-as-needed
     echo.
     echo [loop_check]
     echo c_compiler_type: gcc
     echo c_compiler_path: gcc
     echo c_compiler_options: -pipe -O1
     echo c_linker_path: gcc
-    echo c_linker_options: -Xlinker -${hyphen}no-as-needed
+    echo c_linker_options: -Xlinker -no-as-needed
     echo cpp_compiler_type: g++
     echo cpp_compiler_path: g++
     echo cpp_compiler_options: -pipe
     echo cpp_linker_path: g++
-    echo cpp_linker_options: -Xlinker -${hyphen}no-as-needed
+    echo cpp_linker_options: -Xlinker -no-as-needed
     echo. 
     echo [all_check]
     echo c_compiler_type: gcc
     echo c_compiler_path: gcc
     echo c_compiler_options: -pipe -O1
     echo c_linker_path: gcc
-    echo c_linker_options: -Xlinker -${hyphen}no-as-needed
+    echo c_linker_options: -Xlinker -no-as-needed
     echo cpp_compiler_type: g++
     echo cpp_compiler_path: g++
     echo cpp_compiler_options: -pipe
     echo cpp_linker_path: g++
-    echo cpp_linker_options: -Xlinker -${hyphen}no-as-needed
+    echo cpp_linker_options: -Xlinker -no-as-needed
     echo. 
     echo [debug_check]
     echo c_compiler_type: gcc
     echo c_compiler_path: gcc
     echo c_compiler_options: -pipe -g -O1
     echo c_linker_path: gcc
-    echo c_linker_options: -Xlinker -${hyphen}no-as-needed
+    echo c_linker_options: -Xlinker -no-as-needed
     echo cpp_compiler_type: g++
     echo cpp_compiler_path: g++
     echo cpp_compiler_options: -pipe -g
     echo cpp_linker_path: g++
-    echo cpp_linker_options: -Xlinker -${hyphen}no-as-needed
+    echo cpp_linker_options: -Xlinker -no-as-needed
     echo smarteiffel_options: -no_strip
 
-) > "C:\Users\%USERNAME%\liberty.cfg"
+) > "%USERPROFILE%\liberty.cfg" &
+    type "%USERPROFILE%\liberty.cfg" >> "%AllUsersProfile%\liberty.cfg"
 if not exist "%installation_path%\bin" (
     mkdir bin
 )
 @echo Starting T1...
 :: Compile every source individually
-:: poate este stripul de vina
 cd resources\smarteiffel-germ
+
 gcc -pipe -O2 -c -x c *.c 
 gcc *.o -o compile_to_c
 del *.o
@@ -222,7 +222,31 @@ rd /s /q T1\
 rd /s /q T2\
 rd /s /q T3\
 
-
+::Compile the tools
+cd ..\..\bin
+compile -verbose -boost -no_gc eiffeltest_server.e -o eiffeltest_server 2>errors.txt
+cd bin
+cd ..\src\smarteiffel\commands
+for %%I in (se.e clean.e ace_check.e eiffeltest.e mock.e eiffeltest_ng.e eiffeltest_server.e pretty.e short.e class_check.e finder.e eiffeldoc.e extract_internals.e) do copy %%I ..\..\..\bin >nul
+copy ..\..\tools\wrappers-generator\wrappers_generator.e ..\..\..\..\bin >nul
+cd ..\..\..\bin
+compile -verbose -boost -no_gc -no_split se.e -o se >nul
+compile -verbose -boost -no_gc -no_split clean.e -o clean >nul
+compile -verbose -boost -no_gc -no_split ace_check.e -o ace_check >nul
+compile -verbose -boost -no_gc -no_split eiffeltest.e -o eiffeltest >nul
+compile -verbose -boost -no_gc -no_split mock.e -o mock >nul
+compile -verbose -boost -no_gc -no_split eiffeltest_ng.e -o eiffeltest_ng >nul
+::compile -verbose -boost -no_gc -no_split eiffeltest_server.e -o eiffeltest_server >nul
+compile -verbose -boost -no_gc pretty.e -o pretty >nul
+compile -verbose -boost -no_gc short.e -o short >nul
+compile -verbose -boost -no_gc class_check.e -o class_check >nul
+compile -verbose -boost -no_gc finder.e -o finder >nul
+compile -verbose -boost -no_gc eiffeldoc.e -o eiffeldoc >nul
+compile -verbose -boost -no_gc extract_internals.e -o extract_internals >nul
+::compile -verbose -boost -no_gc wrappers_generator.e -o wrappers_genarator >nul
+del *.c
+del *.id
+del *.h
+del *.bat
 endlocal
-
 pause

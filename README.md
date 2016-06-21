@@ -1,4 +1,4 @@
 # Liberty-Eiffel-Windows
 
-The compile_to_c.exe was created , now the next step is to create the configuration file 
-http://imgur.com/Uy8FrV4
+The compile_to_c.exe was created , and all(most) all the tools compiled.
+Next step is se_make

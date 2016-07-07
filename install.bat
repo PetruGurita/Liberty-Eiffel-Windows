@@ -1,5 +1,6 @@
 @echo off
 setlocal enabledelayedexpansion
+
 ::Check if mingw-64 is installed & environment variable set
 @echo Checking requirements...
 WHERE gcc --version>nul 2>nul
@@ -14,21 +15,21 @@ IF %ERRORLEVEL% NEQ 0 (
 
 set installation_path=%~dp0
 (
-    echo [General]
-    echo bin: %installation_path%bin
-    echo sys: %installation_path%sys
-    echo short: %installation_path%short
+   echo [General]
+    echo bin: !installation_path!bin
+    echo sys: !installation_path!sys
+    echo short: !installation_path!short
     echo flavor: Windows
     echo.
     echo [Environment]
-    echo path_eiffel: %installation_path%
-    echo path_eiffel_core: %installation_path%src\lib
-    echo path_eiffel_extra: %installation_path%src\wrappers
-    echo path_eiffel_staging: %installation_path%src\staging
-    echo path_smarteiffel: %installation_path%src\smarteiffel
-    echo path_tools: %installation_path%src\tools
-    echo path_tutorial: %installation_path%tutorial
-    echo path_work: %installation_path%work
+    echo path_eiffel: !installation_path!
+    echo path_eiffel_core: !installation_path!src\lib
+    echo path_eiffel_extra: !installation_path!src\wrappers
+    echo path_eiffel_staging: !installation_path!src\staging
+    echo path_smarteiffel: !installation_path!src\smarteiffel
+    echo path_tools: !installation_path!src\tools
+    echo path_tutorial: !installation_path!tutorial
+    echo path_work: !installation_path!work
     echo hyphen: -
     echo.
     echo [Loadpath]
@@ -48,7 +49,7 @@ set installation_path=%~dp0
     echo clean: clean
     echo doc: eiffeldoc
     echo find: finder
-    echo make: se_make.sh
+    echo make: se_make.bat
     echo mock: mock
     echo pretty: pretty
     echo short: short
@@ -155,6 +156,7 @@ set installation_path=%~dp0
     echo cpp_linker_options: -Xlinker -no-as-needed
     echo smarteiffel_options: -no_strip
 
+)
 ) > "%USERPROFILE%\liberty.cfg" &
     type "%USERPROFILE%\liberty.cfg" >> "%AllUsersProfile%\liberty.cfg"
 if not exist "%installation_path%\bin" (
@@ -249,4 +251,3 @@ del *.id
 del *.h
 del *.bat
 endlocal
-pause

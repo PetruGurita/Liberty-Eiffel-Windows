@@ -3,15 +3,17 @@
  
 ;-----------------------------------
 ;General
- 
+  
+  RequestExecutionLevel admin
+
   ;Name and file
   Name "Liberty Eiffel"
   OutFile "install.exe"
 
 
   ;Change the default Modern UI icons
-  !define MUI_ICON "C:\Users\petroo\Desktop\proj\photos\install.ico"
-  !define MUI_UNICON "C:\Users\petroo\Desktop\proj\photos\win-uninstall.ico"
+  !define MUI_ICON "C:\Users\petroo\Desktop\proj\installer_without_mingw\photos\install.ico"
+  !define MUI_UNICON "C:\Users\petroo\Desktop\proj\installer_without_mingw\photos\win-uninstall.ico"
  
   ;Default installation folder
   InstallDir "$PROGRAMFILES\$(^Name)"
@@ -22,10 +24,10 @@
  
 ;--------------------------------
 ;Header Files
-  !include "UninstallLog.nsh"
-  !include "C:\Users\petroo\Desktop\proj\MUI2.nsh"
-  ;!include "UnInst.nsh"
-  ;!include "zipdll.nsh"
+  !include "sections.nsh"
+  !include "LogicLib.nsh"
+  !include "C:\Users\petroo\Desktop\proj\installer_without_mingw\MUI2.nsh"
+
  
  
 ;--------------------------------
@@ -46,8 +48,8 @@
   !define MUI_FINISHPAGE_LINK " Visit us at liberty-eiffel.org"
   !define MUI_FINISHPAGE_LINK_LOCATION "http://www.liberty-eiffel.org/"
  
-  ShowInstDetails nevershow
-  ShowUninstDetails nevershow
+  ShowInstDetails hide
+  ShowUninstDetails show
  
 ;--------------------------------
 ;Language Selection Dialog Settings
@@ -99,7 +101,7 @@
  
   ${GetFileName} "${Archive}" $0
   DetailPrint "$(Extract) $0... ${Part}"
-  Nsis7z::ExtractWithDetails "${Archive}" "$(Extract) $0... %s"
+  Nsis7z::ExtractWithDetails "${Archive}" "$(Extract) $0... %s"	
  
 !macroend
 
@@ -109,14 +111,13 @@
  
   !insertmacro MUI_PAGE_WELCOME
  
-  !insertmacro MUI_PAGE_LICENSE "${NSISDIR}\Docs\Modern UI\License.txt"
+  !insertmacro MUI_PAGE_LICENSE "C:\Users\petroo\Desktop\proj\installer_without_mingw.txt"
   !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_DIRECTORY
  
 
   !insertmacro MUI_PAGE_INSTFILES
  
-  !define MUI_PAGE_CUSTOMFUNCTION_PRE Done
   !insertmacro MUI_PAGE_FINISH
   
   ;Uninstaller pages
@@ -158,16 +159,58 @@
 
 
 ;---------------------------------
+!define Environ 'HKCU "Environment"'
+
+
+; StrStr - find substring in a string
+;
+; Usage:
+;   Push "this is some string"
+;   Push "some"
+;   Call StrStr
+;   Pop $0 ; "some string"
+	
+!macro StrStr un
+Function ${un}StrStr
+  Exch $R1 ; $R1=substring, stack=[old$R1,string,...]
+  Exch     ;                stack=[string,old$R1,...]
+  Exch $R2 ; $R2=string,    stack=[old$R2,old$R1,...]
+  Push $R3
+  Push $R4
+  Push $R5
+  StrLen $R3 $R1
+  StrCpy $R4 0
+  ; $R1=substring, $R2=string, $R3=strlen(substring)
+  ; $R4=count, $R5=tmp
+  loop:
+    StrCpy $R5 $R2 $R3 $R4
+    StrCmp $R5 $R1 done
+    StrCmp $R5 "" done
+    IntOp $R4 $R4 + 1
+    Goto loop
+done:
+  StrCpy $R1 $R2 "" $R4
+  Pop $R5
+  Pop $R4
+	  Pop $R3
+	 Pop $R2
+	 Exch $R1 ; $R1=old$R1, stack=[result,...]
+FunctionEnd
+	!macroend
+	!insertmacro StrStr ""
+	!insertmacro StrStr "un."
+
 ;Liberty Eiffel Section
 ;---------------------------------
-!include "EnvVarUpdate.nsh"
 
 Section "Liberty Eiffel" Sec1
   SectionIn 1 2 RO
-  SetDetailsPrint none
+  SetDetailsPrint listonly
   SetOutPath "$INSTDIR"
-  File /r "C:\Users\petroo\Desktop\proj\liberty\"
-  ${EnvVarUpdate} $0 "PATH" "A" "HKLM" "$INSTDIR\bin"
+  File  "C:\Users\petroo\Desktop\proj\installer_without_mingw\liberty\bin\"
+  Push "$INSTDIR\bin"
+  Call AddToPath
+  Call AddLibertyConfigFile
   WriteUninstaller "$INSTDIR\uninstall.exe"
 SectionEnd
 ;--------------------------------
@@ -176,20 +219,21 @@ SectionEnd
 
 Section /o "MinGW" Sec2
   SetDetailsPrint none
-  SetOutPath "C:\mingw"
-  File /r "C:\mingw32\"
-  ${EnvVarUpdate} $0 "PATH" "A" "HKLM" "C:\mingw\bin"
+  SetOutPath "$INSTDIR"
+  File "C:\Users\petroo\Desktop\proj\installer_without_mingw\liberty\mingw-w64-install.exe"
+  ExecWait "$INSTDIR\mingw-w64-install.exe"
 SectionEnd
 
+;--------------------------------
 Section "Uninstall"
 
   SetDetailsPrint none
   RMDir  /r /REBOOTOK $INSTDIR
-  ${un.EnvVarUpdate} $0 "PATH" "R" "HKLM" "$INSTDIR\bin"
   Delete $PROFILE\liberty.cfg
   System::Call 'shell32::SHGetSpecialFolderPath(i $HWNDPARENT, t .r1, i 0x23, i0)i.r0'
   Delete $1\liberty.cfg
-
+  Push "$INSTDIR\bin"
+  Call un.RemoveFromPath
 
 SectionEnd
 
@@ -198,22 +242,89 @@ SectionEnd
  
   ;Language strings
   LangString DESC_Sec1 ${LANG_ENGLISH} "Contains the compiler, libraries and tools."
- 
+  LangString DESC_Sec2 ${LANG_ENGLISH} "In order for all Liberty Eifell features to work , MinGW must be installed." 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
     !insertmacro MUI_DESCRIPTION_TEXT ${Sec1} $(DESC_Sec1)
-    !insertmacro MUI_DESCRIPTION_TEXT ${Sec2} "MinGW will be installed in C:\ ,be sure to have at least 410mb of free space."
+    !insertmacro MUI_DESCRIPTION_TEXT ${Sec2} $(DESC_Sec2)
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 
- Function Done
+
+Function AddToPath
+  Exch $0
+  Push $1
+  Push $2
+  Push $3
+  Push $4
+	
+  ; NSIS ReadRegStr returns empty string on string overflow
+  ; Native calls are used here to check actual length of PATH
+  ; $4 = RegOpenKey(HKEY_CURRENT_USER, "Environment", &$3)
+  System::Call "advapi32::RegOpenKey(i 0x80000001, t'Environment', *i.r3) i.r4"
+  IntCmp $4 0 0 done done
+  ; $4 = RegQueryValueEx($3, "PATH", (DWORD*)0, (DWORD*)0, &$1, ($2=NSIS_MAX_STRLEN, &$2))
+  ; RegCloseKey($3)
+  System::Call "advapi32::RegQueryValueEx(i $3, t'PATH', i 0, i 0, t.r1, *i ${NSIS_MAX_STRLEN} r2) i.r4"
+  System::Call "advapi32::RegCloseKey(i $3)"
+	
+  IntCmp $4 234 0 +4 +4 ; $4 == ERROR_MORE_DATA
+    DetailPrint "AddToPath: original length $2 > ${NSIS_MAX_STRLEN}"
+    MessageBox MB_OK "PATH not updated, original length $2 > ${NSIS_MAX_STRLEN}"
+    Goto done
+	
+  IntCmp $4 0 +5 ; $4 != NO_ERROR
+    IntCmp $4 2 +3 ; $4 != ERROR_FILE_NOT_FOUND
+      DetailPrint "AddToPath: unexpected error code $4"
+      Goto done
+    StrCpy $1 ""
+	
+  ; Check if already in PATH
+  Push "$1;"
+  Push "$0;"
+  Call StrStr
+  Pop $2
+  StrCmp $2 "" 0 done
+  Push "$1;"
+  Push "$0\;"
+  Call StrStr
+  Pop $2
+  StrCmp $2 "" 0 done
+	
+  ; Prevent NSIS string overflow
+  StrLen $2 $0
+  StrLen $3 $1
+  IntOp $2 $2 + $3
+  IntOp $2 $2 + 2 ; $2 = strlen(dir) + strlen(PATH) + sizeof(";")
+  IntCmp $2 ${NSIS_MAX_STRLEN} +4 +4 0
+    DetailPrint "AddToPath: new length $2 > ${NSIS_MAX_STRLEN}"
+    MessageBox MB_OK "PATH not updated, new length $2 > ${NSIS_MAX_STRLEN}."
+    Goto done
+	
+  ; Append dir to PATH
+  DetailPrint "Add to PATH: $0"
+  StrCpy $2 $1 1 -1
+  StrCmp $2 ";" 0 +2
+    StrCpy $1 $1 -1 ; remove trailing ';'
+  StrCmp $1 "" +2   ; no leading ';'
+    StrCpy $0 "$1;$0"
+  WriteRegExpandStr ${Environ} "PATH" $0
+  SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
+	
+  done:
+  Pop $4
+  Pop $3
+  Pop $2
+  Pop $1
+  Pop $0
+FunctionEnd
+
+Function AddLibertyConfigFile
   ExpandEnvStrings $0 %COMSPEC%
   ExecWait '"$0" /C "$INSTDIR\set_path.cmd"'
-  Delete $INSTDIR\set_path.cmd
- 
- FunctionEnd
+  Delete $INSTDIR\set_path.cmd 
+FunctionEnd
 
- 
 Function .onGUIEnd
   
   ;Store installation folder in registry
@@ -226,12 +337,45 @@ FunctionEnd
  
 ;--------------------------------
 ;Uninstaller Functions
- 
-Function un.onInit
- 
-  ;Get stored language preference
-  !insertmacro MUI_UNGETLANGUAGE
- 
+Function un.RemoveFromPath
+  Exch $0
+  Push $1
+  Push $2
+  Push $3
+  Push $4
+  Push $5
+  Push $6
+	
+  ReadRegStr $1 ${Environ} "PATH"
+  StrCpy $5 $1 1 -1
+  StrCmp $5 ";" +2
+  StrCpy $1 "$1;" ; ensure trailing ';'
+  Push $1
+  Push "$0;"
+  Call un.StrStr
+  Pop $2 ; pos of our dir
+  StrCmp $2 "" done
+	
+  DetailPrint "Remove from PATH: $0"
+  StrLen $3 "$0;"
+  StrLen $4 $2
+  StrCpy $5 $1 -$4 ; $5 is now the part before the path to remove
+  StrCpy $6 $2 "" $3 ; $6 is now the part after the path to remove
+  StrCpy $3 "$5$6"
+  StrCpy $5 $3 1 -1
+  StrCmp $5 ";" 0 +2
+    StrCpy $3 $3 -1 ; remove trailing ';'
+  WriteRegExpandStr ${Environ} "PATH" $3
+  SendMessage ${HWND_BROADCAST} ${WM_WININICHANGE} 0 "STR:Environment" /TIMEOUT=5000
+	
+  done:
+  Pop $6
+  Pop $5
+  Pop $4
+  Pop $3
+  Pop $2
+  Pop $1
+  Pop $0
 FunctionEnd
 
 Function un.onUninstSuccess

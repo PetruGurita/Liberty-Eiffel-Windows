@@ -251,3 +251,6 @@ del *.id
 del *.h
 del *.bat
 endlocal
+
+
+::Note : both wrappers_generator and eiffeltest_server use posix net functions(kill, setdomainname, sethostname, getdomainname) that I was not able to reproduce in Windows, this being the reason why they were commented.

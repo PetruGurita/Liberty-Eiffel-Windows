@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="content-language" content="en" />
+    <meta name="description" content="Liberty Eiffel project is a free eiffel compiler started from SmartEiffel code base. Its goal is to retain from SmartEiffel its rigour; but not its rigidity. Think of Liberty as SmartEiffel down from its ivory tower." />
+    <meta name="keywords" content="LibertyEiffel, Documentation, Classes, Overview, Libraries, Tools" />
+    <meta name="robots" content="INDEX,FOLLOW" />
+
+    <title>Liberty Eiffel Debian packages</title>
+    <link rel="stylesheet" href="style.css" type="text/css" />
+  </head>
+  <body>
+    <div id="all">
+    <div class="header"><a href="http://www.gnu.org/software/liberty-eiffel/">GNU</a> | <a href="http://www.liberty-eiffel.org">Liberty Eiffel</a> | <a href="http://et.liberty-eiffel.org">Automated tests</a> | <a href="http://wiki.liberty-eiffel.org/index.php/Main_Page">Wiki</a> | <a href="https://savannah.gnu.org/projects/liberty-eiffel/">Savannah project</a> | <b class="current">Debian packages</b> | <a href="http://doc.liberty-eiffel.org">Documentation</a></div>
+    <div id="content">
+    <img src="images/liberty-light.png" alt="Liberty Logo" align="right">
+
+    <div id="text" style="width:920px;">
+    <h1><span class="dropcap">D</span>ebian packages</h1>
+
+    <p>
+      <b>Important note:</b> The packages are currently <i>unsigned</i>.
+    </p>
+
+    <p>
+      The following repositories can be enabled on Debian machines
+      needing to install Liberty Eiffel.
+    </p>
+
+    <h2><span class="dropcap">S</span>table releases</h2>
+    <p>
+      <a href="http://apt.liberty-eiffel.org/dists/release/main">Stable
+      releases</a> are the official releases.
+    </p>
+    <code>deb http://apt.liberty-eiffel.org/ release main</code>
+
+    <h2><span class="dropcap">R</span>elease candidates</h2>
+    <p>
+      <a href="http://apt.liberty-eiffel.org/dists/rc/main">Release
+      candidates</a> are meant for public testing to shake off bugs.
+    </p>
+    <code>deb http://apt.liberty-eiffel.org/ rc main</code>
+
+    <h2><span class="dropcap">D</span>evelopment snapshots</h2>
+    <p>
+      <a href="http://apt.liberty-eiffel.org/dists/snapshot/main">Snapshots</a>
+      are built every time <a href="http://et.liberty-eiffel.org/">ET</a> runs.
+    </p>
+    <code>deb http://apt.liberty-eiffel.org/ snapshot main</code>
+
+    <h2><span class="dropcap">C</span>ommit snapshots</h2>
+    <p>
+      Commit snapshots come right out of the <a href="https://travis-ci.org/LibertyEiffel/Liberty">&quot;fast&quot; continuous integration</a>.
+    </p>
+    <p>
+      This integration is "fast" because it runs in less than an hour, with the following caveats:
+    </p>
+    <ul>
+      <li>The packages contain no docs and no tutorial.</li>
+      <li>The packages are not tested: travis-ci only checks the tutorial, <i>after</i> having uploaded the packages. If you must, go and check <a href="https://travis-ci.org/LibertyEiffel/Liberty">travis-ci</a>. More thorough testing is provided by <a href="http://et.liberty-eiffel.org/">ET</a> (see above).</li>
+    </ul>
+    <code>deb http://apt.liberty-eiffel.org/ commits main</code>
+
+    </div>
+    </div>
+    <div id="footer" class="header">
+      <!--#config timefmt="%F" -->
+      last updated on <!--#echo var="LAST_MODIFIED" --> - <a href="http://www.liberty-eiffel.org/#imprint">Imprint</a>
+    </div>
+    </div>
+  </body>
+</html>

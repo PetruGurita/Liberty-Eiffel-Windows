@@ -1,0 +1,6 @@
+-no_check
+-require_check
+-ensure_check
+-invariant_check
+-loop_check
+-all_check

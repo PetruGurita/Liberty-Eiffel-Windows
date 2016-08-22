@@ -1,0 +1,28 @@
+-- An example to build the most optimized system.
+system
+   "number2"
+
+root
+   EXAMPLE2: make
+
+default
+
+   verbose (no); -- Or say yes to see C compiler calls
+   assertion (boost);
+   trace(no);
+   debug (no);
+
+cluster
+
+   "${path_tutorial}/number"
+   "${path_liberty_core}/loadpath.se"
+
+generate
+
+   no_split(no);
+   no_strip(no);
+   clean(no);
+   cc: "gcc";
+   c_compiler_options: "-O -g";
+
+end

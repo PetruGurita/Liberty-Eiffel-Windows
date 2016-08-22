@@ -1,0 +1,46 @@
+-- An ACE file defines the environment for a project, together with its root
+-- class and initial creation procedure.
+--
+-- ACE is an abbreviation of Assembly of Classes in Eiffel.
+--
+-- Use of an ACE file obviates the need for specifying many options on the
+-- command line and ensures consistency between successive compilations or
+-- other operations on the project. Such consistency makes it easier to test
+-- and debug, since changes from one compilation to the next are guaranteed to
+-- be limited to coding changes rather than to changes in the compilation
+-- environment.
+--
+-- To launch the compilation with this ACE file, just type:
+--
+--               compile example1.ace
+--
+-- This is a very simple example with the most basic ACE file.
+--
+system
+       -- The system section is introduced by the keyword system followed by
+       -- the name to be given to the executable program which will be produced
+       -- by a compilation. The system name should be enclosed in double
+       -- quotes.
+   "hello"
+
+root
+       -- The root section defines the root class of the system and the initial
+       -- creation procedure. The creation procedure is the routine which is
+       -- executed first when the executable program is run; it is equivalent
+       -- to main() in a C program. This procedure must be a procedure in the
+       -- root class and must be declared as a creation procedure in that
+       -- class.
+   HELLO_WORLD: main
+
+cluster
+       -- The cluster section is introduced by the keyword cluster and defines
+       -- an ordered list of clusters. Roughly speaking, a cluster can be
+       -- considered as a directory in which Eiffel source files are to be
+       -- searched for. The order of this list of clusters is important because
+       -- clusters are considered sequentially when searching for an Eiffel
+       -- source file. The first class file found in the search is the one that
+       -- will be used.  Also note that one may only use the / character as the
+       -- directory separator.
+   "${path_tutorial}"
+   "${path_liberty_core}/loadpath.se"
+end

@@ -1,0 +1,6 @@
+-require_check
+-profile
+-loop_check
+-invariant_check
+-ensure_check
+-no_gc

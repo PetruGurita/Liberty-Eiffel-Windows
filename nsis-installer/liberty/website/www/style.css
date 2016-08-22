@@ -1,0 +1,200 @@
+@font-face {
+font-family: 'Linux Biolinum';
+local: 'Linux Biolinum';
+src: url('fonts/LinBiolinum_R.woff ') format('woff');
+font-weight: normal;
+font-style: normal;
+}
+
+@font-face {
+font-family: 'Linux Biolinum';
+local: 'Linux Biolinum';
+src: url('fonts/LinBiolinum_RB.woff ') format('woff');
+font-weight: bold;
+font-style: normal;
+}
+
+@font-face {
+font-family: 'Linux Biolinum';
+local: 'Linux Biolinum';
+src: url('fonts/LinBiolinum_RI.woff ') format('woff');
+font-weight: normal;
+font-style: italic;
+}
+
+@font-face {
+font-family: 'Linux Biolinum';
+local: 'Linux Biolinum';
+src: url('fonts/LinBiolinum_RBI.woff ') format('woff');
+font-weight: bold;
+font-style: italic;
+}
+
+@font-face {
+font-family: 'Inconsolata';
+local: 'Inconsolata';
+src: url('fonts/Inconsolata.woff ') format('woff');
+font-weight: normal;
+font-style: normal;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: right 2em;
+    background-color: #fafbeb;
+    font-family: 'Linux Biolinum',Verdana,Helvetica;
+    font-size: 15pt;
+}
+
+code {
+    font-family: 'Inconsolata',Courier,monospace;
+    font-size: 14pt;
+    background-color: #ddd;
+}
+
+* {
+    margin: 0;
+    line-height: 130%;
+}
+
+p, h1 {
+    padding-bottom: 6px;
+}
+
+.header {
+    background-color: #5ab0a1;
+    padding: 4px 4px 4px 4px;
+}
+
+h1 {
+    margin: 15px 0px 5px;
+    color: #0d0d6a;
+    font-size: 135%;
+    font-family: "Linux Biolinum",Verdana,Helvetica;
+    font-variant: small-caps;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+h2 {
+    margin: 5px 0px 5px;
+    color: #0d0d6a;
+    font-size: 115%;
+    font-family: "Linux Biolinum",Verdana,Helvetica;
+    font-weight: bold;
+}
+
+.dropcap {
+    color: #b51c39;
+    display: inline;
+    position: relative;
+    top: 3px;
+    font-size: 160%;
+}
+
+a {
+    color: #0d0d6a;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #0d0d6a;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:active {
+    color: #b51c39;
+    text-decoration: underline;
+}
+
+.current {
+    color: #0d0d6a;
+}
+
+#all {
+    position: relative;
+    min-height: 100%;
+}
+
+#footer {
+    padding: 0px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    line-height: 1.5em;
+    text-align: center;
+    font-size: 80%;
+}
+
+#content {
+    padding: 1em 1em 4em 1em;
+}
+
+#container {
+    width: 100%;
+    height: 2em;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 80%;
+    position: absolute;
+    bottom: 1.5em;
+    left: 0;
+    background-color: #5ab0a1;
+}
+
+.btnlink {
+    display: inline-block;
+    padding: 0px 9px;
+    margin-right: 4px;
+    border-radius: 3px;
+    border: solid 1px #c0c0c0;
+    background: #5ab0a1;
+    box-shadow: inset 0px 1px 0px rgba(255,255,255, .8), 0px 1px 3px rgba(0,0,0, .1);
+    font-size: .875em;
+    font-weight: bold;
+    text-decoration: none;
+    color: #0d0d6a;
+    text-shadow: 0px 1px 0px rgba(255,255,255, 1);
+}
+
+.btnlink:hover {
+    text-decoration: none;
+    background: #3d4f5d;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#547085), to(#3d4f5d));
+    background: -moz-linear-gradient(0% 0% 270deg,#547085, #3d4f5d);
+}
+
+.pager {
+    float: left;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.actions {
+    float: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.hidden {
+    display: none;
+    visibility:hidden;
+}
+
+.boxed {
+    border: 3px solid #b51c39;
+    background: #5ab0a1;
+    margin: 14px;
+    padding: 5px;
+}

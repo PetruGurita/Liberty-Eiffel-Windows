@@ -208,7 +208,7 @@ FunctionEnd
   SectionIn 1 2 RO
   SetDetailsPrint listonly
   SetOutPath "$INSTDIR"
-  File /r "${directoryPath}\liberty\bin\*"
+  File /r "${directoryPath}\liberty\*"
   Push "$INSTDIR\bin"
   Call AddToPath
   Call AddLibertyConfigFile

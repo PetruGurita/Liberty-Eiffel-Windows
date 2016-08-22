@@ -11,7 +11,7 @@
   Name "Liberty Eiffel"
   OutFile "install.exe"
   ;Add version information
-  !define _VERSION "1.0.0.7" ;default value
+  !define _VERSION "1.0.0.7"
   VIProductVersion "${_VERSION}"
   VIAddVersionKey /LANG=${LANG_ENGLISH} "ProductName" "Liberty Eiffel"
   VIAddVersionKey /LANG=${LANG_ENGLISH} "FileVersion" "${_VERSION}"
@@ -208,7 +208,7 @@ FunctionEnd
   SectionIn 1 2 RO
   SetDetailsPrint listonly
   SetOutPath "$INSTDIR"
-  File  "${directoryPath}\liberty\bin\"
+  File /r "${directoryPath}\liberty\bin\*"
   Push "$INSTDIR\bin"
   Call AddToPath
   Call AddLibertyConfigFile
